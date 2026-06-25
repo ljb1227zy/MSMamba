@@ -25,20 +25,6 @@ python -m spacy download en_core_web_sm
 
 The selective scan CUDA operators required by VMamba should also be installed correctly.
 
-## Dataset
-
-Please organize the dataset according to the format used in `ref_dataset.py`.
-
-Example:
-
-```text
-datasets/
-├── images/
-├── masks/
-├── train.json
-├── val.json
-└── test.json
-```
 
 ## Pretrained Weights
 
