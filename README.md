@@ -1,14 +1,101 @@
-## MSMamba
+# MSMamba
 
-This repository will host the official implementation of **MSMamba: A Multi-Semantic Mamba Framework for Referring Remote Sensing Image Segmentation**.
+Official PyTorch implementation of **MSMamba: A Multi-Semantic Mamba Framework for Referring Remote Sensing Image Segmentation**.
 
-🚧 **Code & data release plan**  
-To comply with the review policy, we will make the full training/inference code, model checkpoints, and data preparation scripts publicly available **after the paper is accepted**.  
-In the meantime, this repo is kept as a placeholder for reproducibility and will be updated immediately upon acceptance.
+MSMamba is designed for **Referring Remote Sensing Image Segmentation (RRSIS)**, which aims to segment the target object in a remote sensing image according to a natural-language expression.
 
-### What will be released
-- Training and evaluation code
-- Inference scripts
-- Pre-trained checkpoints
-- Data preparation instructions for RefSegRS / RRSIS-D / RISBench / RRSIS-HR
-- Reproduction guides and configs
+## Overview
+
+MSMamba combines a VMamba-based visual backbone with language guidance from BERT. The model introduces multi-semantic visual-language interaction, including sentence-level guidance, local pixel-word correlation, and attribute-word guidance, to improve fine-grained referring segmentation.
+
+## Requirements
+
+Install PyTorch according to your CUDA version. For example:
+
+```bash
+pip install torch==1.13.1 torchvision==0.14.1 --extra-index-url https://download.pytorch.org/whl/cu117
+```
+
+Then install other dependencies:
+
+```bash
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+```
+
+The selective scan CUDA operators required by VMamba should also be installed correctly.
+
+## Dataset
+
+Please organize the dataset according to the format used in `ref_dataset.py`.
+
+Example:
+
+```text
+datasets/
+├── images/
+├── masks/
+├── train.json
+├── val.json
+└── test.json
+```
+
+## Pretrained Weights
+
+Please place the VMamba pretrained checkpoint under:
+
+```text
+pretrain/vssm_base_0229_ckpt_epoch_237.pth
+```
+
+## Training
+
+```bash
+python main.py \
+  --model MSMamba \
+  --data-set rrsisd \
+  --data-path ./datasets \
+  --input-size 480 \
+  --batch-size 8 \
+  --epochs 50 \
+  --output-dir ./outputs/msmamba
+```
+
+## Evaluation
+
+```bash
+python main.py \
+  --model MSMamba \
+  --data-set rrsisd \
+  --data-path ./datasets \
+  --input-size 480 \
+  --eval \
+  --resume ./outputs/msmamba/best_checkpoint.pth
+```
+
+The evaluation reports mIoU, oIoU, and Pr@50–Pr@90.
+
+## Citation
+
+If you find this work useful, please cite our paper:
+
+```bibtex
+@article{zhang2026msmamba,
+  title={MSMamba: A Multi-Semantic Mamba Framework for Referring Remote Sensing Image Segmentation},
+  author={Zhang, Tianxiang and Li, Junbai and Feng, Yanqiang and Wen, Zhaokun and Liu, Li and Li, Jiangyun},
+  journal={Remote Sensing},
+  volume={18},
+  number={12},
+  pages={1949},
+  year={2026},
+  publisher={MDPI}
+}
+```
+
+## Acknowledgement
+
+This project is built upon PyTorch, timm, Transformers, spaCy, and VMamba.
+
+## License
+
+This code is released for academic research purposes.
